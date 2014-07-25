@@ -16,28 +16,173 @@
   <script src="/components/steroids-js/steroids.js"></script>
 
   <script src="/javascripts/application.js"></script>
+
+  <style>
+      @font-face {
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 100;
+      src: local('Roboto Thin'), local('Roboto-Thin'), url(vzIUHo9z-oJ4WgkpPOtg13YhjbSpvc47ee6xR_80Hnw.woff) format('woff');
+    }
+    @font-face {
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 300;
+      src: local('Roboto Light'), local('Roboto-Light'), url(Hgo13k-tfSpn0qi1SFdUfbO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+    }
+    @font-face {
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 400;
+      src: local('Roboto Regular'), local('Roboto-Regular'), url(CrYjSnGjrRCn0pd9VQsnFOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+    }
+    @font-face {
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 700;
+      src: local('Roboto Bold'), local('Roboto-Bold'), url(d-6IYplOFocCacKzxwXSOLO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+    }
+    @font-face {
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 900;
+      src: local('Roboto Black'), local('Roboto-Black'), url(mnpfi9pxYH-Go5UiibESIrO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+    }
+    @font-face {
+      font-family: 'Roboto Condensed';
+      font-style: normal;
+      font-weight: 300;
+      src: local('Roboto Condensed Light'), local('RobotoCondensed-Light'), url(b9QBgL0iMZfDSpmcXcE8nMrfajfqx5pse9BUPMmpr-I.woff) format('woff');
+    }
+    @font-face {
+      font-family: 'Roboto Condensed';
+      font-style: normal;
+      font-weight: 400;
+      src: local('Roboto Condensed Regular'), local('RobotoCondensed-Regular'), url(Zd2E9abXLFGSr9G3YK2MsNxB8OB85xaNTJvVSB9YUjQ.woff) format('woff');
+    }
+    @font-face {
+      font-family: 'Roboto Condensed';
+      font-style: normal;
+      font-weight: 700;
+      src: local('Roboto Condensed Bold'), local('RobotoCondensed-Bold'), url(b9QBgL0iMZfDSpmcXcE8nPZRQUbYfRc-1FWT9T9EE8M.woff) format('woff');
+    }
+
+
+
+    .userBlock {
+      font-family: 'Roboto Condensed';
+      font-weight: 700;
+      width:100%;
+      padding: 20px;
+      background-color:#9b59b6;
+      text-transform: uppercase;
+      text-align:center;
+      color:white;
+      font-size: 25pt;
+      line-height: 120%;
+    }
+
+    .userBlock:hover
+     {
+      filter:brightness(60%);  
+    }
+
+    .darkHeader {
+      background-color:#2c3e50;
+      font-size: 20pt;
+      /*position:absolute;*/
+      /*top:0;*/
+    }
+
+    .red {
+      background-color: #e74c3c;
+    }
+
+    .blue {
+      background-color: #2980b9;
+    }
+
+    body {
+      background-color: #2c3e50;
+    }
+
+    input {
+      background-color: transparent;
+      text-align: center;
+      font-family: 'Roboto Condensed';
+      font-weight:700;
+      color:white;
+
+    }
+
+    a {
+
+    }
+
+  </style>
 </head>
 <body class="content">
-  <div class="padding">
-    <h1>Welcome to Steroids!</h1>
+<div class="userBlock darkHeader">EMERGENCY ALERTS</div>
 
-    <p>Awesome! This file is located at <strong>www/index.html</strong> &mdash; open it, change some text, save the file, and press enter in the Terminal window running <strong>$ steroids connect</strong>. The changes are updated to all connected devices. Cool, ain't it?</p>
+<div class="contactButtons">
+<div class="userBlock" onclick="alert('Hi');">{USER NAME}</div>
+<div class="userBlock red" onclick="alert('Hi');">notify all</div>
 
-    <h2>Using AppGyver Scanner</h2>
+</div>
 
-    <p>On iOS, to restart your current app or scan another app, <strong>tap and hold on the screen with three fingers.</strong>. This opens the Scanner context menu.</p>
+<div class="userBlock blue" id="addButton" onclick="addContact();" style="font-family: 'Roboto-UltraBold';">+</div>
 
-    <p>On Android, press the native back button to return to the device desktop. Open the Scanner again to scan another app or re-open your previous app.</p>
+<script src="/javascripts/jquery.min.js"></script>
+<script>
 
-    <h2>Start the tutorial</h2>
+function addContact() {
+  var phoneNumber;
+  var name;
 
-    <p>Let's spend a few minutes on a short tutorial. Go to your Steroids project directory and run the command:</p>
 
-    <p><code>$ steroids generate tutorial begin</code></p>
+  navigator.notification.prompt(
+    'Please enter a contact\'s phone number (country code required)',  // message
+    function (results) {
+        // alert(results.input1);
+        if (results.buttonIndex == 1) {
+          phoneNumber = results.input1;
 
-    <h2>Get in touch with us!</h2>
+          navigator.notification.prompt(
+            'Please enter a contact name',  // message
+            function (results1) {
+              if (results1.buttonIndex == 1) {
+                name = results1.input1;
 
-    <p>Feel free to contact us at <a href="mailto:contact@appgyver.com">contact@appgyver.com</a>, we would love to get your feedback!</p>
-  </div>
+                // alert(name);
+                // alert(phoneNumber);
+
+                $(".contactButtons").append('<div class="userBlock red" onclick="notifyNumber(\'' + phoneNumber + '\')">' + name + '</div>');
+
+              }
+            },                  // callback to invoke
+            'Contact Name',            // title
+            ['Ok'],             // buttonLabels
+            'Jane Doe'                 // defaultText
+          );
+
+        }
+
+
+
+     },                  // callback to invoke
+    'Add Contact',            // title
+    ['OK','Cancel'],             // buttonLabels
+    '+13141592654'                 // defaultText
+  );
+
+
+
+
+  // $(".contactButtons").append('<div class="userBlock red"><input type="text" placeholder="Name, Phone Number (include country code)"></div>');
+
+}
+
+
+</script>
 </body>
 </html>

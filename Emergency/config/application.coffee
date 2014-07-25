@@ -62,7 +62,8 @@ steroids.config.location = "http://localhost/index.html"
 #   location: "http://localhost/initialView.html"
 
 # ## Navigation Bar
-steroids.config.navigationBar.tintColor = "#00aeef"
+steroids.config.navigationBar.tintColor = "
+#34495e"
 steroids.config.navigationBar.titleColor = "#ffffff"
 steroids.config.navigationBar.buttonTintColor = "#ffffff"
 
@@ -76,7 +77,7 @@ steroids.config.navigationBar.buttonTintColor = "#ffffff"
 steroids.config.loadingScreen.tintColor = "#262626"
 
 # ## iOS Status Bar
-steroids.config.statusBar.enabled = true
+steroids.config.statusBar.enabled = false
 steroids.config.statusBar.style = "default"
 
 # ## File Watcher
