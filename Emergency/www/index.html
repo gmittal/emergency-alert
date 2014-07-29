@@ -8,14 +8,6 @@
   <link rel="stylesheet" href="/vendor/ionic/css/ionic.css" />
   <link rel="stylesheet" href="/stylesheets/application.css" />
 
-  <script src="/javascripts/onerror.js"></script>
-  <script src="/javascripts/console.log.js"></script>
-
-  <!-- cordova.js is served from localhost to ensure the correct version -->
-  <script src="http://localhost/cordova.js"></script>
-  <script src="/components/steroids-js/steroids.js"></script>
-
-  <script src="/javascripts/application.js"></script>
 
   <style>
       @font-face {
@@ -102,6 +94,11 @@
       background-color: #2980b9;
     }
 
+    .turquoise {
+      background-color: #16a085;
+      border-top: 1px solid white;
+    }
+
     body {
       background-color: #2c3e50;
     }
@@ -125,20 +122,53 @@
 <div class="userBlock darkHeader">EMERGENCY ALERTS</div>
 
 <div class="contactButtons">
-<div class="userBlock" onclick="alert('Hi');">{USER NAME}</div>
-<div class="userBlock red" onclick="alert('Hi');">notify all</div>
+<div class="userBlock" id="userName" onclick="alert('Hi');">{USER NAME}</div>
+<div class="userBlock red" onclick="notifyAll(document.getElementById('userName').innerHTML);">notify all</div>
 
 </div>
 
 <div class="userBlock blue" id="addButton" onclick="addContact();" style="font-family: 'Roboto-UltraBold';">+</div>
 
+
+
+<script src="/javascripts/onerror.js"></script>
+<script src="/javascripts/console.log.js"></script>
+
+<!-- cordova.js is served from localhost to ensure the correct version -->
+<script src="http://localhost/cordova.js"></script>
+<script src="/components/steroids-js/steroids.js"></script>
+
+<script src="/javascripts/application.js"></script>
 <script src="/javascripts/jquery.min.js"></script>
 <script>
+// var colorOrder = [];
+// alert($("#userName").text());
+document.addEventListener("deviceready", initUserName, false);
+
+function initUserName() {
+
+  navigator.notification.prompt(
+    'Please enter your name',  // message
+    function (results) {
+      $("#userName").text(results.input1);
+
+    },                  // callback to invoke
+    'Name',            // title
+    ['OK'],             // buttonLabels
+    'Pi Patel'                 // defaultText
+  );
+
+}
+
+
+
+
+var phoneNumbers = [];
+
 
 function addContact() {
   var phoneNumber;
   var name;
-
 
   navigator.notification.prompt(
     'Please enter a contact\'s phone number (country code required)',  // message
@@ -150,37 +180,101 @@ function addContact() {
           navigator.notification.prompt(
             'Please enter a contact name',  // message
             function (results1) {
+
               if (results1.buttonIndex == 1) {
                 name = results1.input1;
+                phoneNumbers.push(phoneNumber);
 
-                // alert(name);
-                // alert(phoneNumber);
-
-                $(".contactButtons").append('<div class="userBlock red" onclick="notifyNumber(\'' + phoneNumber + '\')">' + name + '</div>');
+                $(".contactButtons").append('<div class="userBlock turquoise" onclick="notifyNumber(\'' + phoneNumber + '\', \'' + $("#userName").text() + '\')">' + name + '</div>');
 
               }
             },                  // callback to invoke
             'Contact Name',            // title
             ['Ok'],             // buttonLabels
-            'Jane Doe'                 // defaultText
+            'Richard Parker'                 // defaultText
           );
 
         }
-
-
-
      },                  // callback to invoke
     'Add Contact',            // title
     ['OK','Cancel'],             // buttonLabels
     '+13141592654'                 // defaultText
   );
 
+}
+
+function notifyNumber(phone, user) {
+  // $.post('http://32e112b.ngrok.com/', {"number": phone, "userID": user}, function (val) {
+
+  // });
 
 
+  $.ajax({
+    type:'POST',
+    url:"http://32e112b.ngrok.com/",
+    data:{"number": phone, "userID": user},
+    success:function(data) {
+            navigator.notification.alert(
+              'The alert was successfully sent.',  // message
+              alertDismissed,         // callback
+              'Sent!',            // title
+              'OK'                  // buttonName
+            );
+    },
+    error:function (xhr, status, errorThrown) {
+        // alert(errorThrown); //could be alert if you don't use the dev tools
+            navigator.notification.alert(
+              'The alert was successfully sent.',  // message
+              alertDismissed,         // callback
+              'Sent!',            // title
+              'OK'                  // buttonName
+            );
+    }
+  });
 
-  // $(".contactButtons").append('<div class="userBlock red"><input type="text" placeholder="Name, Phone Number (include country code)"></div>');
+
+    // $.ajax({
+    //   type: "POST",
+    //   url: 'http://32e112b.ngrok.com/',
+    //   data: {"number": phone, "userID": user},
+    //   success: function() {
+    //     alert("YOYOYOYO");
+    //   },
+    //   dataType: 'jsonp'
+    // });
 
 }
+
+
+function notifyAll(user) {
+
+  for (var i = 0; i < phoneNumbers.length; i++) {
+    var number = phoneNumbers[i];
+
+      $.ajax({
+        type:'POST',
+        url:"http://32e112b.ngrok.com/",
+        data:{"number": number, "userID": user},
+        success:function(data) {
+
+        },
+        error:function (xhr, status, errorThrown) {
+
+        }
+      });
+
+
+
+  }
+
+}
+
+
+
+function alertDismissed() {
+
+}
+
 
 
 </script>
