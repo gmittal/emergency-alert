@@ -137,7 +137,7 @@
 <!-- cordova.js is served from localhost to ensure the correct version -->
 <script src="http://localhost/cordova.js"></script>
 <script src="/components/steroids-js/steroids.js"></script>
-
+-
 <script src="/javascripts/application.js"></script>
 <script src="/javascripts/jquery.min.js"></script>
 <script>
@@ -145,25 +145,54 @@
 // alert($("#userName").text());
 document.addEventListener("deviceready", initUserName, false);
 
+var phoneNumbers = [];
+var contactNames = [];
+
+
+
 function initUserName() {
+  // window.localStorage.clear(); // uncomment for development ONLY
+  // alert(window.localStorage.getItem("phoneList"));
+  
+  if (window.localStorage.getItem("username") == null) {
 
-  navigator.notification.prompt(
-    'Please enter your name',  // message
-    function (results) {
-      $("#userName").text(results.input1);
+      navigator.notification.prompt(
+        'Please enter your name',  // message
+        function (results) {
+          window.localStorage.setItem("username", results.input1);
+          $("#userName").text(results.input1);
 
-    },                  // callback to invoke
-    'Name',            // title
-    ['OK'],             // buttonLabels
-    'Pi Patel'                 // defaultText
-  );
+        },                  // callback to invoke
+        'Name',            // title
+        ['OK'],             // buttonLabels
+        'Pi Patel'                 // defaultText
+      ); 
+
+  } else {
+      var savedUsername = window.localStorage.getItem("username");
+      $("#userName").text(savedUsername);
+  }
+
+
+  if (window.localStorage.getItem("phoneList") != null && window.localStorage.getItem("nameList") != null) {
+    phoneNumbers = JSON.parse(window.localStorage.getItem("phoneList"));
+    contactNames = JSON.parse(window.localStorage.getItem("nameList"));
+
+    for (var i = 0; i < phoneNumbers.length; i++) {
+      var number = phoneNumbers[i];
+      var name = contactNames[i];
+
+      $(".contactButtons").append('<div class="userBlock turquoise" onclick="notifyNumber(\'' + number + '\', \'' + $("#userName").text() + '\')">' + name + '</div>');
+    }
+
+  }
+
 
 }
 
 
 
 
-var phoneNumbers = [];
 
 
 function addContact() {
@@ -183,7 +212,13 @@ function addContact() {
 
               if (results1.buttonIndex == 1) {
                 name = results1.input1;
-                phoneNumbers.push(phoneNumber);
+                phoneNumbers.push(phoneNumber.toString());
+                contactNames.push(name.toString());
+// 
+                // alert(phoneNumbers);
+
+                window.localStorage.setItem("phoneList", JSON.stringify(phoneNumbers));
+                window.localStorage.setItem("nameList", JSON.stringify(contactNames));
 
                 $(".contactButtons").append('<div class="userBlock turquoise" onclick="notifyNumber(\'' + phoneNumber + '\', \'' + $("#userName").text() + '\')">' + name + '</div>');
 
@@ -208,29 +243,82 @@ function notifyNumber(phone, user) {
 
   // });
 
+  // var location = grabLocation();
+  // alert(location.lng + ", " + location.lat;
+  // var jsonData = {};
 
-  $.ajax({
-    type:'POST',
-    url:"http://32e112b.ngrok.com/",
-    data:{"number": phone, "userID": user},
-    success:function(data) {
-            navigator.notification.alert(
-              'The alert was successfully sent.',  // message
-              alertDismissed,         // callback
-              'Sent!',            // title
-              'OK'                  // buttonName
-            );
-    },
-    error:function (xhr, status, errorThrown) {
-        // alert(errorThrown); //could be alert if you don't use the dev tools
-            navigator.notification.alert(
-              'The alert was successfully sent.',  // message
-              alertDismissed,         // callback
-              'Sent!',            // title
-              'OK'                  // buttonName
-            );
-    }
+  // if (grabLocation().lng != undefined && grabLocation().lat != undefined || grabLocation().lng != null && grabLocation().lat == null) {
+  //   jsonData = {"number": phone, "userID": user, "longitude": grabLocation().lng, "latitude": grabLocation().lat};
+  // } else {
+  //   jsonData = {"number": phone, "userID": user}; 
+  // }
+  // alert(grabLocation().lng + ", " + grabLocation().lat);
+
+  navigator.geolocation.getCurrentPosition(function (position) {
+
+        var lng = position.coords.longitude;
+        var lat = position.coords.latitude;
+
+
+          $.ajax({
+            type:'POST',
+            url:"http://32e112b.ngrok.com/",
+            data:{"number": phone, "userID": user, "longitude":lng, "latitude":lat},
+            success:function(data) {
+                    navigator.notification.alert(
+                      'The alert was successfully sent.',  // message
+                      alertDismissed,         // callback
+                      'Sent!',            // title
+                      'OK'                  // buttonName
+                    );
+            },
+            error:function (xhr, status, errorThrown) {
+                // alert(errorThrown); //could be alert if you don't use the dev tools
+                    navigator.notification.alert(
+                      'The alert was successfully sent.',  // message
+                      alertDismissed,         // callback
+                      'Sent!',            // title
+                      'OK'                  // buttonName
+                    );
+            }
+          });
+
+
+
+  }, function (error) {
+        var lng = 0;
+        var lat = 0;
+
+
+          $.ajax({
+            type:'POST',
+            url:"http://32e112b.ngrok.com/",
+            data:{"number": phone, "userID": user, "longitude":lng, "latitude":lat},
+            success:function(data) {
+                    navigator.notification.alert(
+                      'The alert was successfully sent.',  // message
+                      alertDismissed,         // callback
+                      'Sent!',            // title
+                      'OK'                  // buttonName
+                    );
+            },
+            error:function (xhr, status, errorThrown) {
+                // alert(errorThrown); //could be alert if you don't use the dev tools
+                    navigator.notification.alert(
+                      'The alert was successfully sent.',  // message
+                      alertDismissed,         // callback
+                      'Sent!',            // title
+                      'OK'                  // buttonName
+                    );
+            }
+          });
+
+
+
+
   });
+
+
 
 
     // $.ajax({
@@ -251,17 +339,48 @@ function notifyAll(user) {
     for (var i = 0; i < phoneNumbers.length; i++) {
       var number = phoneNumbers[i];
 
-        $.ajax({
-          type:'POST',
-          url:"http://32e112b.ngrok.com/",
-          data:{"number": number, "userID": user},
-          success:function(data) {
+      navigator.geolocation.getCurrentPosition(function (position) {
 
-          },
-          error:function (xhr, status, errorThrown) {
+            var lng = position.coords.longitude;
+            var lat = position.coords.latitude;
 
-          }
-        });
+
+              $.ajax({
+                type:'POST',
+                url:"http://32e112b.ngrok.com/",
+                data:{"number": number, "userID": user, "longitude":lng, "latitude":lat},
+                success:function(data) {
+
+                },
+                error:function (xhr, status, errorThrown) {
+                    // alert(errorThrown); //could be alert if you don't use the dev tools
+
+                }
+              });
+
+
+
+      }, function (error) {
+            var lng = 0;
+            var lat = 0;
+
+
+              $.ajax({
+                type:'POST',
+                url:"http://32e112b.ngrok.com/",
+                data:{"number": number, "userID": user, "longitude":lng, "latitude":lat},
+                success:function(data) {
+                        
+                },
+                error:function (xhr, status, errorThrown) {
+
+                }
+              });
+
+
+
+
+      });
 
 
 
@@ -279,6 +398,10 @@ function notifyAll(user) {
 }
 
 
+
+
+
+// grabLocation();
 
 function alertDismissed() {
 
