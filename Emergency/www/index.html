@@ -76,7 +76,7 @@
 
     .turquoise:active
      {
-      background-color:#1abc9c;
+      background-color:#16a085;
     }
 
     .red:active
@@ -86,12 +86,13 @@
 
     .blue:active
      {
-      background-color:#3498db;
+      background-color:#2980b9;
     }
 
     .darkHeader {
       background-color:#2c3e50;
       font-size: 20pt;
+      padding:23px;
       /*position:absolute;*/
       /*top:0;*/
     }
@@ -101,11 +102,11 @@
     }
 
     .blue {
-      background-color: #2980b9;
+      background-color: #3498db;
     }
 
     .turquoise {
-      background-color: #16a085;
+      background-color:#1abc9c;
       border-top: 1px solid white;
     }
 
@@ -129,7 +130,7 @@
   </style>
 </head>
 <body class="content" ontouchstart="">
-<div class="userBlock darkHeader">EMERGENCY ALERTS</div>
+<div class="userBlock darkHeader"><img src="icons/alert.png" style="vertical-align:middle; height: 20pt;"><span style="vertical-align:middle;">&nbsp; EMERGENCY ALERTS</span></div>
 
 <div class="contactButtons">
 <div class="userBlock" id="userName">{USER NAME}</div>
@@ -154,7 +155,7 @@
 // var colorOrder = [];
 // alert($("#userName").text());
 
-var urlReq = 'http://52860702.ngrok.com';
+var urlReq = 'http://powerful-depths-1557.herokuapp.com/';
 
 
 document.addEventListener("deviceready", initUserName, false);
@@ -165,7 +166,7 @@ var contactNames = [];
 
 
 function initUserName() {
-  // window.localStorage.clear(); // uncomment for development ONLY
+  window.localStorage.clear(); // uncomment for development ONLY
   // alert(window.localStorage.getItem("phoneList"));
   
   if (window.localStorage.getItem("username") == null) {
