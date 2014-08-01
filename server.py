@@ -6,6 +6,8 @@ from twilio.rest import TwilioRestClient
 import json
 import urllib2
 
+import ast
+
 
 account_sid = "ACba498d91d1312e0f4975eaac513d64be"
 auth_token = "7c2bacbc7a9783c496e4af1af1a51a0b"
@@ -17,7 +19,13 @@ app = Flask(__name__)
 
 def no_sms():
 
-	phoneNumber = request.form["number"]
+	# phoneNumber = request.form["number"]
+
+	phoneNumbers = request.form["number"]
+	phoneNumbers = ast.literal_eval(phoneNumbers)
+
+	print phoneNumbers
+
 	user = request.form["userID"]
 	# body = request.form["messageBody"]
 	
@@ -39,21 +47,27 @@ def no_sms():
 	str(lat)
 
 	if (lon != 0 and lat != 0):
-		url = "http://pelias.test.mapzen.com/reverse?lat=" + lat + "&lng=" + lon
+		url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lon + "&sensor=false"
+
+		# url = "http://pelias.test.mapzen.com/reverse?lat=" + lat + "&lng=" + lon
 		jsonFile = urllib2.urlopen(url).read()
 
 		data = json.loads(jsonFile)
 		# data = json.load(jsonFile)
 
-		if (len(data["features"]) != 0):
-			print "Array empty."
+		if (len(data["results"]) != 0):
+			# print "Array empty."
 
-			streetAddress = data["features"][0]["properties"]["name"]
-			city = data["features"][0]["properties"]["locality_name"]
-			state = data["features"][0]["properties"]["admin1_abbr"]
-			country = data["features"][0]["properties"]["admin0_abbr"]
+			# streetNumber = data["results"][0]["address_components"][0]["long_name"]
+			# street = data["results"][0]["address_components"][1]["short_name"]
+			# city = data["results"][0]["address_components"][3]["long_name"]
+			# state = data["results"][0]["address_components"][5]["short_name"]
+			# country = data["results"][0]["address_components"][6]["short_name"]
+			# zipCode = data["results"][0]["address_components"][7]["short_name"]
 
-			location = streetAddress + ", " + city + ", " + state + ", " + country
+			# location = streetNumber + " " + street + ", " + city + ", " + state + ", " + country
+
+			location = data["results"][0]["formatted_address"]
 		else:
 			location = "("+ lat +", " + lon + ") -- [Unknown Address]"
 	
@@ -68,10 +82,12 @@ def no_sms():
 
 	
 
-	if (phoneNumber):
+	if (phoneNumbers):
 		if (user):
 			print message
-			smsMessage = client.messages.create(to=phoneNumber, from_="+14806481956", body=message)
+			for number in range(0, len(phoneNumbers)):
+				print phoneNumbers[number]
+				# smsMessage = client.messages.create(to=phoneNumbers[number], from_="+16506660889", body=message)
 
 
 	return message

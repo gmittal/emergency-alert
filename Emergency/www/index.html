@@ -74,9 +74,19 @@
       line-height: 120%;
     }
 
-    .userBlock:hover
+    .turquoise:active
      {
-      filter:brightness(60%);  
+      background-color:#1abc9c;
+    }
+
+    .red:active
+     {
+      background-color:#c0392b;
+    }
+
+    .blue:active
+     {
+      background-color:#3498db;
     }
 
     .darkHeader {
@@ -118,7 +128,7 @@
 
   </style>
 </head>
-<body class="content">
+<body class="content" ontouchstart="">
 <div class="userBlock darkHeader">EMERGENCY ALERTS</div>
 
 <div class="contactButtons">
@@ -143,6 +153,10 @@
 <script>
 // var colorOrder = [];
 // alert($("#userName").text());
+
+var urlReq = 'http://52860702.ngrok.com';
+
+
 document.addEventListener("deviceready", initUserName, false);
 
 var phoneNumbers = [];
@@ -238,7 +252,7 @@ function addContact() {
 
 }
 
-function notifyNumber(phone, user) {
+function notifyNumber(phoneNum, user) {
   // $.post('http://32e112b.ngrok.com/', {"number": phone, "userID": user}, function (val) {
 
   // });
@@ -254,6 +268,14 @@ function notifyNumber(phone, user) {
   // }
   // alert(grabLocation().lng + ", " + grabLocation().lat);
 
+  var phone = [];
+  phone.push(phoneNum);
+  phone = JSON.stringify(phone);
+
+  // var phone = JSON.stringify(phoneArr);
+
+  // alert(phone);
+
   navigator.geolocation.getCurrentPosition(function (position) {
 
         var lng = position.coords.longitude;
@@ -262,7 +284,7 @@ function notifyNumber(phone, user) {
 
           $.ajax({
             type:'POST',
-            url:"http://32e112b.ngrok.com/",
+            url:urlReq,
             data:{"number": phone, "userID": user, "longitude":lng, "latitude":lat},
             success:function(data) {
                     navigator.notification.alert(
@@ -292,7 +314,7 @@ function notifyNumber(phone, user) {
 
           $.ajax({
             type:'POST',
-            url:"http://32e112b.ngrok.com/",
+            url:urlReq,
             data:{"number": phone, "userID": user, "longitude":lng, "latitude":lat},
             success:function(data) {
                     navigator.notification.alert(
@@ -335,66 +357,79 @@ function notifyNumber(phone, user) {
 
 
 function notifyAll(user) {
-  if (phoneNumbers.length != 0) {
-    for (var i = 0; i < phoneNumbers.length; i++) {
-      var number = phoneNumbers[i];
-
-      navigator.geolocation.getCurrentPosition(function (position) {
-
-            var lng = position.coords.longitude;
-            var lat = position.coords.latitude;
 
 
-              $.ajax({
-                type:'POST',
-                url:"http://32e112b.ngrok.com/",
-                data:{"number": number, "userID": user, "longitude":lng, "latitude":lat},
-                success:function(data) {
+    // var phone = [];
+    // phone.push(phoneNum);
+    phone = JSON.stringify(phoneNumbers);
 
-                },
-                error:function (xhr, status, errorThrown) {
-                    // alert(errorThrown); //could be alert if you don't use the dev tools
+    // var phone = JSON.stringify(phoneArr);
 
-                }
-              });
+    // alert(phone);
 
+    navigator.geolocation.getCurrentPosition(function (position) {
 
-
-      }, function (error) {
-            var lng = 0;
-            var lat = 0;
+          var lng = position.coords.longitude;
+          var lat = position.coords.latitude;
 
 
-              $.ajax({
-                type:'POST',
-                url:"http://32e112b.ngrok.com/",
-                data:{"number": number, "userID": user, "longitude":lng, "latitude":lat},
-                success:function(data) {
-                        
-                },
-                error:function (xhr, status, errorThrown) {
-
-                }
-              });
+            $.ajax({
+              type:'POST',
+              url:urlReq,
+              data:{"number": phone, "userID": user, "longitude":lng, "latitude":lat},
+              success:function(data) {
+                      navigator.notification.alert(
+                        'The alert was successfully sent.',  // message
+                        alertDismissed,         // callback
+                        'Sent!',            // title
+                        'OK'                  // buttonName
+                      );
+              },
+              error:function (xhr, status, errorThrown) {
+                  // alert(errorThrown); //could be alert if you don't use the dev tools
+                      navigator.notification.alert(
+                        'The alert was successfully sent.',  // message
+                        alertDismissed,         // callback
+                        'Sent!',            // title
+                        'OK'                  // buttonName
+                      );
+              }
+            });
 
 
 
+    }, function (error) {
+          var lng = 0;
+          var lat = 0;
 
-      });
+
+            $.ajax({
+              type:'POST',
+              url:urlReq,
+              data:{"number": phone, "userID": user, "longitude":lng, "latitude":lat},
+              success:function(data) {
+                      navigator.notification.alert(
+                        'The alert was successfully sent.',  // message
+                        alertDismissed,         // callback
+                        'Sent!',            // title
+                        'OK'                  // buttonName
+                      );
+              },
+              error:function (xhr, status, errorThrown) {
+                  // alert(errorThrown); //could be alert if you don't use the dev tools
+                      navigator.notification.alert(
+                        'The alert was successfully sent.',  // message
+                        alertDismissed,         // callback
+                        'Sent!',            // title
+                        'OK'                  // buttonName
+                      );
+              }
+            });
 
 
 
-    }
 
-    navigator.notification.alert(
-      'All of your contacts have been notified.',  // message
-      alertDismissed,         // callback
-      'Sent!',            // title
-      'OK'                  // buttonName
-    );
-
-  }
-
+    });
 }
 
 
@@ -410,5 +445,6 @@ function alertDismissed() {
 
 
 </script>
+
 </body>
 </html>
