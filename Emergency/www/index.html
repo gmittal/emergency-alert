@@ -107,7 +107,7 @@
 
     .turquoise {
       background-color:#1abc9c;
-      border-top: 1px solid white;
+      border-top: 1px solid #16a085;
     }
 
     body {
@@ -148,17 +148,27 @@
 <!-- cordova.js is served from localhost to ensure the correct version -->
 <script src="http://localhost/cordova.js"></script>
 <script src="/components/steroids-js/steroids.js"></script>
--
+
 <script src="/javascripts/application.js"></script>
 <script src="/javascripts/jquery.min.js"></script>
 <script>
 // var colorOrder = [];
 // alert($("#userName").text());
 
+
+// document.addEventListener("deviceready", onDeviceReady, false);
+
+
+
+
+
+
+
 var urlReq = 'http://powerful-depths-1557.herokuapp.com/';
 
 
 document.addEventListener("deviceready", initUserName, false);
+
 
 var phoneNumbers = [];
 var contactNames = [];
@@ -166,6 +176,32 @@ var contactNames = [];
 
 
 function initUserName() {
+
+        // initAd();
+
+        // // display a banner at startup
+        // window.plugins.AdMob.createBannerView();
+
+        // // prepare the interstitial
+        // window.plugins.AdMob.createInterstitialView();
+
+        // // somewhere else, show the interstital, not needed if set autoShow = true
+        // window.plugins.AdMob.showInterstitialAd();
+
+
+
+
+
+
+
+
+// if(admobid) admobid.createBanner( admobid.banner );
+// if(AdMob) AdMob.prepareInterstitial( {adId:admobid.interstitial, autoShow:false} );
+
+// show the interstitial later, e.g. at end of game level
+// if(AdMob) AdMob.showInterstitial();
+
+
   // window.localStorage.clear(); // uncomment for development ONLY
   // alert(window.localStorage.getItem("phoneList"));
   
@@ -204,6 +240,8 @@ function initUserName() {
 
 
 }
+
+
 
 
 
@@ -442,6 +480,15 @@ function notifyAll(user) {
 function alertDismissed() {
 
 }
+
+
+
+
+
+
+
+
+
 
 
 
