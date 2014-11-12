@@ -9,8 +9,8 @@ import urllib2
 import ast
 
 
-account_sid = "ACba498d91d1312e0f4975eaac513d64be"
-auth_token = "7c2bacbc7a9783c496e4af1af1a51a0b"
+account_sid = "xxx"
+auth_token = "xxxx"
 client = TwilioRestClient(account_sid, auth_token)
 
 app = Flask(__name__)
